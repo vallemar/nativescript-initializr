@@ -110,7 +110,7 @@ export class DownloadProjectService {
       }
     );
     return result.data.tree
-      .filter((data: any) => data.path.includes(flavor.repositoryPath))
+      .filter((data: any) => data.path.includes(flavor.repositoryPath + "/"))
       .map((item: ItemRepository) => {
         item.repositoryPath = nativescriptTemplateRepository;
         return item;
