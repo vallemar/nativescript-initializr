@@ -158,7 +158,6 @@ export default {
         : file.text());
     }
 
-    // https://raw.githubusercontent.com/vallemar/freqtrade-app/master/tests/utils.ts
     return treeRepository;
   }
 

@@ -9,6 +9,7 @@ import Modal from "@/components/Modal.vue";
 import { useWindowSize } from "@vueuse/core";
 import { DownloadProjectService } from "@/services/DownloadProjectService";
 import Loading from "@/components/Loading.vue";
+import SearchPlugins from "@/components/SearchPlugins.vue";
 
 const downloadProjectService: DownloadProjectService =
   new DownloadProjectService();
@@ -17,19 +18,9 @@ const loading = ref(false);
 const refDownload = ref<HTMLAnchorElement>();
 const formFlavor = ref<Flavor[]>(FLAVORS);
 const projectMetadata = reactive<ProjectMetadata>(PROJECT_DEFINITION);
-const formSearchPlugin = ref<string>();
 const pluginsStore = ref<Plugin[]>([]);
 const addPlugins = ref<Plugin[]>([]);
 const openModalAddPlugin = ref(false);
-
-const pluginsMatch = computed<Plugin[]>(() => {
-  return (
-    pluginsStore.value.filter((plugin) =>
-      // @ts-ignore
-      plugin.name.toLowerCase().includes(formSearchPlugin.value?.toLowerCase())
-    ) || []
-  ).slice(0, 20) as Plugin[];
-});
 
 const onSelectedFlavor = (index: number) => {
   console.log(index);
@@ -165,36 +156,12 @@ pluginService.findAll().then((plugins) => {
       max-height="50%"
       @close="openModalAddPlugin = false"
     >
-      <div class="top-sticky bg p-4">
-        <h3 class="text-2xl">Add your plugins</h3>
-        <input
-          class="mt-4 w-1/2"
-          v-model="formSearchPlugin"
-          type="text"
-          placeholder="Search"
-        />
-      </div>
-
-      <div class="w-full p-4">
-        <ItemPlugin
-          class="my-2 cursor-pointer"
-          v-for="(pluginSearch, i) in pluginsMatch"
-          @click="togglePlugin(pluginSearch)"
-          :key="i"
-          :plugin="pluginSearch"
-          :selected="!!addPlugins.find((x) => x.name === pluginSearch.name)"
-        ></ItemPlugin>
-        <div v-if="pluginsMatch.length === 0">
-          <ItemPlugin
-            class="my-2 cursor-pointer"
-            v-for="(betterPlugin, i) in pluginsStore.slice(0, 20)"
-            @click="togglePlugin(betterPlugin)"
-            :key="i"
-            :plugin="betterPlugin"
-            :selected="!!addPlugins.find((x) => x.name === betterPlugin.name)"
-          ></ItemPlugin>
-        </div>
-      </div>
+      <SearchPlugins
+        :pluginsStore="pluginsStore"
+        :addPlugins="addPlugins"
+        @togglePlugin="togglePlugin"
+      >
+      </SearchPlugins>
     </Modal>
   </div>
 </template>
