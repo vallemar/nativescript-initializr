@@ -377,4 +377,6 @@ input[type="text"] {
 }
 input[type="text"]:focus {
   border-bottom: 3px solid var(--color-ns-cyan);
+  outline-width: 0;
+  outline: none;
 }
