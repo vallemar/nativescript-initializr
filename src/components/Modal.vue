@@ -5,8 +5,8 @@
         <div class="modal-overlay" id="modal-overlay"></div>
         <div
           ref="refModal"
-          class="modal rounded-2xl bg-light"
-          :class="{ 'full-screen': fullScreen }"
+          class="modal bg-light"
+          :class="[fullScreen ? 'full-screen' : 'rounded-2xl']"
           id="modal"
           :style="{ height: fullScreen ? '100%' : maxHeight }"
         >

@@ -34,11 +34,14 @@ const formatDate = (date: string) => {
         <span class="text-lg font-bold">
           {{ plugin.name }}
         </span>
-        <span class="text-base"> Updated: {{ formatDate(plugin.date) }} </span>
+        <span class="text-base text-right">
+          <span class="hidden md:inline-block">Updated:</span>
+          {{ formatDate(plugin.date) }}
+        </span>
       </div>
-      <span class="text-base mt-1">
+      <div class="text-base mt-2">
         {{ plugin.description }}
-      </span>
+      </div>
     </div>
     <div class="flex justify-between items-center mt-3">
       <span>Last month download {{ plugin.downloadStats.lastMonth }}</span>
@@ -53,7 +56,7 @@ const formatDate = (date: string) => {
           <span class="mdi mdi-github"></span>
         </a>
         <a
-          class="px-3 rounded-full"
+          class="px-3 rounded-full truncate overflow-hidden"
           style="background: #d55553"
           :href="plugin.links.npm"
           target="_blank"

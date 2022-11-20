@@ -70,7 +70,12 @@ pluginService.findAll().then((plugins) => {
 </script>
 
 <template>
-  <Loading message="Generating project" :show="loading"></Loading>
+  <Loading
+    :full="true"
+    message="Generating project"
+    :show="loading"
+    position="fixed"
+  ></Loading>
   <div class="px-3 my-8 mb-16">
     <a ref="refDownload"></a>
     <div class="width-content grid lg:grid-cols-2 grid-cols-1">
