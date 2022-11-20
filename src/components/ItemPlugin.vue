@@ -3,7 +3,10 @@ import { PropType } from "vue";
 import { Plugin } from "@/types/app.types";
 
 const { plugin } = defineProps({
-  plugin: Object as PropType<Plugin[]>,
+  plugin: {
+    type: Object as PropType<Plugin>,
+    required: true,
+  },
   selected: Boolean,
 });
 defineEmits(["selected", "remove"]);
