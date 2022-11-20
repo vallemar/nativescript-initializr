@@ -1,0 +1,380 @@
+:root {
+  font-family: Inter var,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: white;
+  background-color: rgb(15 23 42);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  /* https://material.io/resources/color/#!/?view.left=0&view.right=1&primary.color=339966&secondary.color=02283C&primary.text.color=ffffff&secondary.text.color=fbffee */
+  --height-header: 65px;
+  --max-width: 1450px;
+
+  /* Colors */
+  --c-primary: #003543;
+  --c-primary-light: rgb(255, 255, 255);
+  --c-secondary: #00DC82;
+  --c-secondary-light: rgb(0, 220, 130);
+  --c-gray: #F0F0F0;
+  --c-gray-text: #8C8E8F;
+  --c-error: rgb(252 125 125 / 55%);
+  --c-white: white;
+  --c-text: #ffffff;
+  --c-text-over-secondary: white;
+--color-ns: rgba(101,173,241, 1);
+--color-ns-secondary: rgba(39, 46, 63, 0.87);
+--color-ns-cyan: rgb(34 211 238);
+
+  /* background */
+  --bg: rgb(15 23 42);
+  --c-background-rgb: 255, 255, 255;
+  --c-background-primary: var(--c-primary);
+  --c-background-secondary: var(--c-secondary);
+  --c-background-light: #ffffff;
+  --c-background-gray: #FAFAFA;
+  --c-background-error: #761a1a;
+  --c-background-error-light: rgba(251, 146, 60, 0.3);
+  --c-background-gray-gradient: linear-gradient(rgb(248, 250, 253) 0%, rgba(248, 250, 253, 0) 413px);
+
+  --border-radius: 6px;
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.dark {
+  --c-text: #ffffff;
+  --c-secondary: #00DC82;
+  --c-primary: #001E26;
+  --bg: #001E26;
+  --c-background-primary: var(--c-primary);
+  --c-background-secondary: var(--c-secondary);
+  --c-background-rgb: 0, 30, 38;
+  --c-background-light: #003543;
+  --c-background-gray: #003543;
+  --c-text-over-secondary: #001E26;
+
+  body {
+    background-color: var(--c-primary);
+  }
+}
+
+
+html,
+body {
+  overflow: initial !important;
+  overflow-x: initial !important;
+  overflow-y: initial !important;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  overflow: scroll !important;
+  overflow-x: initial !important;
+}
+
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+}
+
+
+a,
+a:link,
+a:visited,
+a:hover,
+a:active {
+  /*  color: var(--c-primary);*/
+  text-decoration: none !important;
+}
+
+ul {
+  list-style-type: none;
+}
+
+*:focus {
+  outline: none;
+}
+
+button {
+  background: none;
+  outline: none;
+}
+
+button:active,
+button:focus {
+  border-style: none;
+  outline: none;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+}
+.mdi{
+  font-size: 22px;
+}
+
+.text-degree {
+  background: var(--c-secondary);
+  background: -webkit-linear-gradient(to right, var(--c-secondary) 58%, #F05ABA 100%);
+  background: -moz-linear-gradient(to right, var(--c-secondary) 58%, #F05ABA 100%);
+  background: linear-gradient(to right, var(--c-secondary) 58%, #F05ABA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.top-sticky {
+  position: sticky;
+  top: 0;
+}
+
+.width-page {
+  max-width: var(--max-width);
+}
+
+.width-content {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: auto;
+}
+
+.c-view {
+  padding: 1.25rem;
+  position: relative;
+  min-height: calc(100vh - var(--height-header));
+  margin-bottom: calc(var(--height-header) + 15px);
+  width: 100%;
+}
+
+.bg{
+  background: var(--bg);
+}
+.bg-ns{
+  background: var(--color-ns);
+}
+.bg-ns-secondary{
+  background: var(--color-ns-secondary);
+}
+.color-ns{
+  color: var(--color-ns);
+}
+.color-ns-cyan{
+  color: var(--color-ns-cyan);
+}
+.text-xxs {
+  font-size: 0.70rem;
+}
+
+.text-xxl {
+  font-size: 0.70rem;
+}
+
+.color-error{
+  color: var(--c-error);
+}
+.color-bg{
+  color: var(--bg);
+}
+.bg-error{
+  color: var(--c-error);
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.1s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.close-modal {
+  position: absolute;
+  right: 15px;
+  top: 8px;
+  z-index: 1;
+}
+
+.modal {
+  /* This way it could be display flex or grid or whatever also. */
+  display: block;
+  background: var(--bg);
+  /* Probably need media queries here */
+  min-width: 200px;
+  width: auto;
+  max-width: 100%;
+  min-height: 100px;
+  height: auto;
+  max-height: 100%;
+
+  position: fixed;
+
+  z-index: 100;
+
+  left: 50%;
+  top: 50%;
+
+  /* Use this for centering if unknown width/height */
+  transform: translate(-50%, -50%);
+
+  /* If known, negative margins are probably better (less chance of blurry text). */
+  /* margin: -200px 0 0 -200px; */
+}
+
+.modal.full-screen {
+  left: 0%;
+  top: 0%;
+  transform: translate(0, 0);
+  height: 100vh;
+  width: 100vw;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  background: rgba(153, 153, 153, 0.6);
+}
+
+
+/*GENERAL*/
+input[type="radio"]:checked + *::before {
+  background: radial-gradient(var(--c-secondary) 0%, var(--c-secondary) 40%, transparent 50%, transparent);
+  border-color: var(--c-secondary);
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+input[type="radio"] + *::before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.3rem;
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: var(--c-primary);
+}
+
+input[type="text"] {
+  background: transparent;
+  border-bottom: 3px solid var(--color-ns-secondary);
+  padding-left: 4px;
+}
+input[type="text"]:focus {
+  border-bottom: 3px solid var(--color-ns-cyan);
+}
