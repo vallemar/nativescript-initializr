@@ -1,10 +1,5 @@
 import { Adapter } from "@/adapters/Adapter";
-import {
-  RequestReactNativePluginDTO,
-  Plugin,
-  ReactNativePlugin,
-  TypePlugin,
-} from "@/types/app.types";
+import { Plugin, TypePlugin } from "@/types/app.types";
 
 export class NativeScriptPluginAdapter implements Adapter<Plugin[], Plugin[]> {
   adapt(data: Plugin[]): Plugin[] {
@@ -13,11 +8,5 @@ export class NativeScriptPluginAdapter implements Adapter<Plugin[], Plugin[]> {
       nativeScriptPlugin.package = nativeScriptPlugin.name;
       return nativeScriptPlugin;
     });
-  }
-
-  private getVersion(reactNativePlugin: ReactNativePlugin) {
-    return reactNativePlugin.github.lastRelease
-      ? reactNativePlugin.github.lastRelease.tagName.replace("v", "")
-      : "latest";
   }
 }

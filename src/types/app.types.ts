@@ -20,6 +20,7 @@ export enum TypePlugin {
 export type Plugin = {
   name: string;
   version: string;
+  package: string;
   description: string;
   date: string;
   links: {

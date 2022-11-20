@@ -214,9 +214,9 @@ module.exports = (env) => {
     if (packageFile && typeof packageFile.file === "string") {
       const packageJSON: PackageJSON = JSON.parse(packageFile.file);
       plugins.forEach((plugin) => {
-        packageJSON.dependencies[plugin.name] = plugin.version;
+        packageJSON.dependencies[plugin.package] = plugin.version;
       });
-      packageJSON.name = projectDefinition.package;
+      packageJSON.name = projectDefinition.name;
       if (projectDefinition.description) {
         packageJSON.description = projectDefinition.description;
       }
