@@ -97,12 +97,12 @@ pluginService.findAll().then((plugins) => {
       <div class="lg:p-4 p-0 mt-9 lg:border-left">
         <div class="flex justify-between items-center border-b pb-4">
           <h3 class="text-2xl">Plugins</h3>
-          <button
-            class="border px-3 py-1 rounded-full"
+          <div
+            class="border px-3 py-1 rounded-full cursor-pointer"
             @click="openModalAddPlugin = true"
           >
             Add plugins
-          </button>
+          </div>
         </div>
         <div class="mt-2 added-plugin">
           <div

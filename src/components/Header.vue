@@ -5,7 +5,7 @@
     <nav class="header border-slate-50/[0.06] border">
       <div class="flex items-center width-content h-full px-3">
         <img class="logo" src="/img/ns-logo-dark.svg" />
-        <h1 class="lg:text-4xl text-3xl ml-4 font-bold">
+        <h1 class="md:text-4xl text-2xl ml-4 font-bold">
           NativeScript Initializr ⚡
         </h1>
       </div>
