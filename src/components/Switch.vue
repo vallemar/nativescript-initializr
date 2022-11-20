@@ -1,0 +1,87 @@
+<script lang="ts" setup>
+import { ref, watch } from "vue";
+
+const emit = defineEmits(["update:modelValue"]);
+const { modelValue } = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const value = ref(modelValue);
+
+watch(
+  () => modelValue,
+  (newValue) => {
+    value.value = newValue;
+  }
+);
+
+const onChange = () => {
+  emit("update:modelValue", value.value);
+};
+</script>
+<template>
+  <label class="switch mr-2">
+    <input v-model="value" :value="value" type="checkbox" @change="onChange" />
+    <span class="slider round"></span>
+  </label>
+</template>
+<style scoped>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 17px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-ns-secondary);
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: var(--color-ns-cyan);
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(13px);
+  -ms-transform: translateX(13px);
+  transform: translateX(13px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>

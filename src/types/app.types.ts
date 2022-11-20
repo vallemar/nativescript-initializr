@@ -12,13 +12,18 @@ export type ProjectMetadata = {
   package?: string;
 };
 
+export enum TypePlugin {
+  NS,
+  RN,
+}
+
 export type Plugin = {
   name: string;
   version: string;
   description: string;
   date: string;
   links: {
-    npm: string;
+    npm?: string;
     repository: string;
   };
   downloadStats: {
@@ -30,4 +35,72 @@ export type Plugin = {
     name: string;
     username: string;
   };
+  type: TypePlugin;
 };
+
+export interface UrlsRN {
+  repo: string;
+  clone: string;
+}
+
+export interface LastReleaseRN {
+  name: string;
+  tagName: string;
+  createdAt: Date;
+  publishedAt: Date;
+  isPrerelease: boolean;
+}
+export interface StatsRN {
+  hasIssues: boolean;
+  hasWiki: boolean;
+  hasPages: boolean;
+  hasDownloads: boolean;
+  hasTopics: boolean;
+  updatedAt: string;
+  createdAt: Date;
+  pushedAt: Date;
+  forks: number;
+  issues: number;
+  subscribers: number;
+  stars: number;
+}
+
+export interface GithubRN {
+  urls: UrlsRN;
+  stats: StatsRN;
+  name: string;
+  fullName: string;
+  description: string;
+  topics: string[];
+  hasTypes: boolean;
+  newArchitecture: boolean;
+  lastRelease?: LastReleaseRN;
+}
+
+export interface NpmRN {
+  downloads: number;
+  weekDownloads: number;
+  start: string;
+  end: string;
+  period: string;
+}
+
+export interface RequestReactNativePluginDTO {
+  libraries: ReactNativePlugin[];
+  total: number;
+}
+export interface ReactNativePlugin {
+  githubUrl: string;
+  npmPkg: string;
+  ios: boolean;
+  android: boolean;
+  github: GithubRN;
+  images: any[];
+  npm: NpmRN;
+  score: number;
+  matchingScoreModifiers: string[];
+  popularity: number;
+  topicSearchString: string;
+  matchScore: number;
+  type: TypePlugin;
+}

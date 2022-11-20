@@ -31,6 +31,7 @@
 --color-ns: rgba(101,173,241, 1);
 --color-ns-secondary: rgba(39, 46, 63, 0.87);
 --color-ns-cyan: rgb(34 211 238);
+--color-rn: #61dafb;
 
   /* background */
   --bg: rgb(15 23 42);
@@ -262,6 +263,15 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 .color-ns-cyan{
   color: var(--color-ns-cyan);
+}
+.bg-ns-cyan{
+  background: var(--color-ns-cyan);
+}
+.bg-rn{
+  background: var(--color-rn);
+}
+.color-rn{
+  color: var(--color-rn);
 }
 .text-xxs {
   font-size: 0.70rem;

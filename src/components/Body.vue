@@ -21,6 +21,7 @@ const projectMetadata = reactive<ProjectMetadata>(PROJECT_DEFINITION);
 const pluginsStore = ref<Plugin[]>([]);
 const addPlugins = ref<Plugin[]>([]);
 const openModalAddPlugin = ref(false);
+const reactNativePlugins = ref(false);
 
 const onSelectedFlavor = (index: number) => {
   console.log(index);
@@ -165,6 +166,8 @@ pluginService.findAll().then((plugins) => {
         :pluginsStore="pluginsStore"
         :addPlugins="addPlugins"
         @togglePlugin="togglePlugin"
+        @addPlugin="addPlugin"
+        @removePlugin="removePlugin"
       >
       </SearchPlugins>
     </Modal>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import { Plugin } from "@/types/app.types";
+import { Plugin, TypePlugin } from "@/types/app.types";
 
 const { plugin } = defineProps({
   plugin: {
@@ -35,6 +35,11 @@ const formatDate = (date: string) => {
           {{ plugin.name }}
         </span>
         <span class="text-base text-right">
+          <span
+            class="px-2 mr-2 rounded-full bg-rn color-bg"
+            v-if="plugin.type === TypePlugin.RN"
+            >RN</span
+          >
           <span class="hidden md:inline-block">Updated:</span>
           {{ formatDate(plugin.date) }}
         </span>
@@ -61,7 +66,8 @@ const formatDate = (date: string) => {
           :href="plugin.links.npm"
           target="_blank"
         >
-          npm v{{ plugin.version }}
+          npm <span v-if="plugin.version !== 'latest'">v</span
+          >{{ plugin.version }}
         </a>
       </div>
     </div>

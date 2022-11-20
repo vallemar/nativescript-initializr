@@ -55,6 +55,9 @@ export class DownloadProjectService {
     if (projectDefinition.package) {
       this.addNativescriptConfigFile(items, projectDefinition, flavor);
     }
+    if (plugins.find((plugin) => plugin.name === "@open-native/core")) {
+      this.addWebpackOpenNativeFile(items, flavor);
+    }
     const zip = this.buildZip(items, flavor, projectDefinition);
     this.downloadUser(link, zip);
   }
@@ -141,6 +144,35 @@ export default {
     return items;
   }
 
+  private addWebpackOpenNativeFile(
+    items: ItemRepository[],
+    flavor: Flavor
+  ): ItemRepository[] {
+    items.push({
+      mode: "",
+      path: flavor.repositoryPath + "/webpack.config.js",
+      sha: "",
+      size: 0,
+      type: TypeItemRepository.BLOB,
+      url: "",
+      repositoryPath: nativescriptTemplateConfigRepository,
+      file: `const webpack = require("@nativescript/webpack");
+
+module.exports = (env) => {
+\twebpack.init(env);
+
+\t// Learn how to customize:
+\t// https://docs.nativescript.org/webpack
+\twebpack.chainWebpack(config => {
+\t\tconfig.resolve.alias.set('react-native', '@open-native/core');
+\t});
+
+\treturn webpack.resolveConfig();
+};`.trim(),
+    });
+    return items;
+  }
+
   private async downloadTreeFiles(
     treeRepository: ItemRepository[]
   ): Promise<ItemRepository[]> {
@@ -184,7 +216,7 @@ export default {
       plugins.forEach((plugin) => {
         packageJSON.dependencies[plugin.name] = plugin.version;
       });
-      packageJSON.name = projectDefinition.name;
+      packageJSON.name = projectDefinition.package;
       if (projectDefinition.description) {
         packageJSON.description = projectDefinition.description;
       }
