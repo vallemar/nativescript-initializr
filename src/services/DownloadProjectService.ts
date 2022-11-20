@@ -37,6 +37,7 @@ const nativescriptTemplateConfigRepository: RepositoryPath = {
   repo: "nativescript-app-templates",
 };
 const BLOB_EXTENSIONS = ["svg", "png", "ico", "jpeg", "jpg", "ttf"];
+const PATH_RESOURCES = "shared/App_Resources";
 const accessToken = "";
 
 export class DownloadProjectService {
@@ -55,11 +56,13 @@ export class DownloadProjectService {
     if (projectDefinition.package) {
       this.addNativescriptConfigFile(items, projectDefinition, flavor);
     }
-    if (plugins.find((plugin) => plugin.name === "@open-native/core")) {
-      this.addWebpackOpenNativeFile(items, flavor);
-    }
+    this.addWebpackFile(items, this.containOpenNativePlugin(plugins), flavor);
     const zip = this.buildZip(items, flavor, projectDefinition);
     this.downloadUser(link, zip);
+  }
+
+  private containOpenNativePlugin(plugins: Plugin[]) {
+    return !!plugins.find((plugin) => plugin.name === "@open-native/core");
   }
 
   private buildZip(
@@ -72,10 +75,13 @@ export class DownloadProjectService {
     zip.folder(projectName);
 
     files.forEach((item) => {
-      const pathItem = `${projectName}/${this.getAbsolutePath(
-        item.path,
-        flavor
-      )}`;
+      let pathItem = "";
+      if (item.path.includes(PATH_RESOURCES)) {
+        pathItem = `${projectName}/${this.getAbsolutePathResources(item.path)}`;
+      } else {
+        pathItem = `${projectName}/${this.getAbsolutePath(item.path, flavor)}`;
+      }
+
       if (
         item.type === TypeItemRepository.TREE &&
         item.path !== flavor.repositoryPath
@@ -91,6 +97,9 @@ export class DownloadProjectService {
 
   private getAbsolutePath(path: string, flavor: Flavor) {
     return path.replace(flavor.repositoryPath + "/", "");
+  }
+  private getAbsolutePathResources(path: string) {
+    return path.replace("shared/", "");
   }
   private getFileExtension(path: string) {
     const extensions = path.split(".");
@@ -110,7 +119,11 @@ export class DownloadProjectService {
       }
     );
     return result.data.tree
-      .filter((data: any) => data.path.includes(flavor.repositoryPath + "/"))
+      .filter(
+        (data: any) =>
+          data.path.includes(flavor.repositoryPath + "/") ||
+          data.path.includes(PATH_RESOURCES)
+      )
       .map((item: ItemRepository) => {
         item.repositoryPath = nativescriptTemplateRepository;
         return item;
@@ -144,8 +157,9 @@ export default {
     return items;
   }
 
-  private addWebpackOpenNativeFile(
+  private addWebpackFile(
     items: ItemRepository[],
+    containOpenNative: boolean,
     flavor: Flavor
   ): ItemRepository[] {
     items.push({
@@ -163,10 +177,11 @@ module.exports = (env) => {
 
 \t// Learn how to customize:
 \t// https://docs.nativescript.org/webpack
-\twebpack.chainWebpack(config => {
-\t\tconfig.resolve.alias.set('react-native', '@open-native/core');
-\t});
-
+${
+  containOpenNative
+    ? "\twebpack.chainWebpack(config => {\n\t\tconfig.resolve.alias.set('react-native', '@open-native/core');\n\t});"
+    : ""
+}
 \treturn webpack.resolveConfig();
 };`.trim(),
     });
