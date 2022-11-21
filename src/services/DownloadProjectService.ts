@@ -37,7 +37,6 @@ const nativescriptTemplateConfigRepository: RepositoryPath = {
   repo: "nativescript-app-templates",
 };
 const BLOB_EXTENSIONS = ["svg", "png", "ico", "jpeg", "jpg", "ttf"];
-const PATH_RESOURCES = "shared/App_Resources";
 const accessToken = "";
 
 export class DownloadProjectService {
@@ -75,13 +74,10 @@ export class DownloadProjectService {
     zip.folder(projectName);
 
     files.forEach((item) => {
-      let pathItem = "";
-      if (item.path.includes(PATH_RESOURCES)) {
-        pathItem = `${projectName}/${this.getAbsolutePathResources(item.path)}`;
-      } else {
-        pathItem = `${projectName}/${this.getAbsolutePath(item.path, flavor)}`;
-      }
-
+      const pathItem = `${projectName}/${this.getAbsolutePath(
+        item.path,
+        flavor
+      )}`;
       if (
         item.type === TypeItemRepository.TREE &&
         item.path !== flavor.repositoryPath
@@ -98,9 +94,7 @@ export class DownloadProjectService {
   private getAbsolutePath(path: string, flavor: Flavor) {
     return path.replace(flavor.repositoryPath + "/", "");
   }
-  private getAbsolutePathResources(path: string) {
-    return path.replace("shared/", "");
-  }
+
   private getFileExtension(path: string) {
     const extensions = path.split(".");
     return extensions[extensions.length - 1];
@@ -119,11 +113,7 @@ export class DownloadProjectService {
       }
     );
     return result.data.tree
-      .filter(
-        (data: any) =>
-          data.path.includes(flavor.repositoryPath + "/") ||
-          data.path.includes(PATH_RESOURCES)
-      )
+      .filter((data: any) => data.path.includes(flavor.repositoryPath + "/"))
       .map((item: ItemRepository) => {
         item.repositoryPath = nativescriptTemplateRepository;
         return item;
