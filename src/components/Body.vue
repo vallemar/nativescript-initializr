@@ -10,6 +10,7 @@ import { shared } from "@/utils/Shared";
 import { SharedProject } from "@/types/share.types";
 import { useRoute } from "vue-router";
 import { useCommonStore } from "@/plugins/stores/Common.store";
+import { eventAnalytics, EventsAnalytics } from "@/utils/Analytics";
 const ItemPlugin = defineAsyncComponent(
   () => import("@/components/ItemPlugin.vue")
 );
@@ -21,7 +22,6 @@ const LoadingDownload = defineAsyncComponent(
   () => import("@/components/LoadingDownload.vue")
 );
 const Loading = defineAsyncComponent(() => import("@/components/Loading.vue"));
-
 const downloadProjectService: DownloadProjectService =
   new DownloadProjectService();
 const { width } = useWindowSize();
@@ -84,6 +84,7 @@ const download = async () => {
     );
   }
   loading.value = false;
+  eventAnalytics(EventsAnalytics.Download);
 };
 
 if (shared.isSharedProject(route)) {
@@ -109,6 +110,7 @@ const sharedProject = () => {
     );
     sharedProjectData.openModal = true;
     sharedProjectData.dataString = sharedData;
+    eventAnalytics(EventsAnalytics.Share);
   }
 };
 

@@ -88,7 +88,7 @@ export class DownloadProjectService {
           dir: true,
         });
       } else if (item.type === TypeItemRepository.BLOB)
-        zip.file(pathItem, item.file);
+        zip.file(pathItem, item.file as any);
     });
     return zip;
   }
