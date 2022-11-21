@@ -1,30 +1,57 @@
 <script setup lang="ts">
-import { computed, PropType, reactive, ref } from "vue";
-import { Plugin, ProjectMetadata, Flavor } from "@/types/app.types";
+import { computed, reactive, ref, defineAsyncComponent } from "vue";
+import { Flavor, Plugin, ProjectMetadata } from "@/types/app.types";
 import RadioGroup from "@/components/RadioGroup.vue";
 import { FLAVORS, PROJECT_DEFINITION } from "@/constant/constant";
 import { pluginService } from "@/services/PluginService";
-import ItemPlugin from "@/components/ItemPlugin.vue";
-import Modal from "@/components/Modal.vue";
-import { useWindowSize } from "@vueuse/core";
+import { useClipboard, useWindowSize } from "@vueuse/core";
 import { DownloadProjectService } from "@/services/DownloadProjectService";
-import Loading from "@/components/Loading.vue";
-import SearchPlugins from "@/components/SearchPlugins.vue";
+import { shared } from "@/utils/Shared";
+import { SharedProject } from "@/types/share.types";
+import { useRoute } from "vue-router";
+import { useCommonStore } from "@/plugins/stores/Common.store";
+const ItemPlugin = defineAsyncComponent(
+  () => import("@/components/ItemPlugin.vue")
+);
+const SearchPlugins = defineAsyncComponent(
+  () => import("@/components/SearchPlugins.vue")
+);
+const Modal = defineAsyncComponent(() => import("@/components/Modal.vue"));
+const LoadingDownload = defineAsyncComponent(
+  () => import("@/components/LoadingDownload.vue")
+);
+const Loading = defineAsyncComponent(() => import("@/components/Loading.vue"));
 
 const downloadProjectService: DownloadProjectService =
   new DownloadProjectService();
 const { width } = useWindowSize();
+const route = useRoute();
+const commonStore = useCommonStore();
 const loading = ref(false);
+const loadingPlugins = ref(false);
 const refDownload = ref<HTMLAnchorElement>();
 const formFlavor = ref<Flavor[]>(FLAVORS);
 const projectMetadata = reactive<ProjectMetadata>(PROJECT_DEFINITION);
 const pluginsStore = ref<Plugin[]>([]);
 const addPlugins = ref<Plugin[]>([]);
 const openModalAddPlugin = ref(false);
-const reactNativePlugins = ref(false);
+
+const flavorSelected = computed<Flavor | undefined>(() =>
+  formFlavor.value.find((flavor) => flavor.selected)
+);
+const sharedProjectData = reactive<
+  SharedProject & { openModal: boolean; dataString: string }
+>({
+  flavor: "",
+  name: "",
+  plugins: [],
+  openModal: false,
+  rnPlugins: false,
+  dataString: "",
+});
+const { copy: copyClipboard } = useClipboard();
 
 const onSelectedFlavor = (index: number) => {
-  console.log(index);
   formFlavor.value.forEach((flavor) => (flavor.selected = false));
   formFlavor.value[index].selected = true;
 };
@@ -48,15 +75,40 @@ const removePlugin = (plugin: Plugin) => {
 
 const download = async () => {
   loading.value = true;
-  const flavor = formFlavor.value.find((flavor) => flavor.selected);
-  if (flavor) {
+  if (flavorSelected.value) {
     await downloadProjectService.download(
       refDownload.value!,
-      flavor,
+      flavorSelected.value,
       projectMetadata,
       addPlugins.value
     );
-    loading.value = false;
+  }
+  loading.value = false;
+};
+
+if (shared.isSharedProject(route)) {
+  loadingPlugins.value = true;
+  const shareData = shared.retrieveSharedProject(route);
+  const indexFlavor = FLAVORS.findIndex(
+    (flavor: Flavor) => flavor.text === shareData.flavor
+  );
+  onSelectedFlavor(indexFlavor);
+  projectMetadata.name = shareData.name;
+  projectMetadata.description = shareData.description;
+  projectMetadata.package = shareData.package;
+  commonStore.enableReactNativePlugins = shareData.rnPlugins;
+}
+
+const sharedProject = () => {
+  if (flavorSelected.value) {
+    const sharedData = shared.buildURL(
+      flavorSelected.value,
+      projectMetadata,
+      addPlugins.value,
+      commonStore.enableReactNativePlugins
+    );
+    sharedProjectData.openModal = true;
+    sharedProjectData.dataString = sharedData;
   }
 };
 
@@ -67,16 +119,23 @@ pluginService.findAll().then((plugins) => {
       return new Date(b.date) - new Date(a.date);
     })
   );
+  if (shared.isSharedProject(route)) {
+    loadingPlugins.value = true;
+    shared.resolvePlugins(route, pluginsStore.value).then((plugins) => {
+      addPlugins.value.push(...plugins);
+      loadingPlugins.value = false;
+    });
+  }
 });
 </script>
 
 <template>
-  <Loading
+  <LoadingDownload
     :full="true"
     message="Generating project"
     :show="loading"
     position="fixed"
-  ></Loading>
+  ></LoadingDownload>
   <div class="px-3 my-8 mb-16">
     <a ref="refDownload"></a>
     <div class="width-content grid lg:grid-cols-2 grid-cols-1">
@@ -100,7 +159,7 @@ pluginService.findAll().then((plugins) => {
           </div>
         </div>
       </div>
-      <div class="lg:p-4 p-0 mt-9 lg:border-left">
+      <div class="lg:p-4 p-0 mt-9 lg:border-left relative">
         <div class="flex justify-between items-center border-b pb-4">
           <h3 class="text-2xl">Plugins</h3>
           <div
@@ -110,7 +169,9 @@ pluginService.findAll().then((plugins) => {
             Add plugins
           </div>
         </div>
-        <div class="mt-2 added-plugin">
+        <div class="mt-2 added-plugin relative" style="min-height: 200px">
+          <Loading :show="loadingPlugins" position="absolute"></Loading>
+
           <div
             v-for="(pluginAdded, i) in addPlugins"
             :key="i"
@@ -149,6 +210,12 @@ pluginService.findAll().then((plugins) => {
         </a>
       </div>
       <button
+        class="px-3 md:px-5 py-2 text-white bg font-bold mr-4 rounded-full"
+        @click="sharedProject"
+      >
+        Shared
+      </button>
+      <button
         class="px-5 py-2 color-bg font-bold mr-4 md:mr-0 rounded-full"
         style="background: var(--color-ns-cyan)"
         @click="download"
@@ -170,6 +237,32 @@ pluginService.findAll().then((plugins) => {
         @removePlugin="removePlugin"
       >
       </SearchPlugins>
+    </Modal>
+    <Modal
+      :open="sharedProjectData.openModal"
+      @close="sharedProjectData.openModal = false"
+    >
+      <div
+        class="p-6 flex flex-col items-center relative"
+        :style="{ minWidth: width < 900 ? '85vw' : '35vw' }"
+      >
+        <h3 class="text-2xl text-left w-full">Copy and share project</h3>
+        <input
+          class="mt-8 w-full"
+          type="text"
+          v-model="sharedProjectData.dataString"
+          disabled
+        />
+        <VDropdown :distance="6">
+          <button
+            @click="copyClipboard(sharedProjectData.dataString)"
+            class="mdi mdi-content-copy cursor-pointer mt-4"
+          ></button>
+          <template #popper>
+            <div class="text-white p-3">Copied</div>
+          </template>
+        </VDropdown>
+      </div>
     </Modal>
   </div>
 </template>

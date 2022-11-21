@@ -8,7 +8,15 @@
       :style="{ background: background, position: position }"
     >
       <div class="width f-column center-vertical center-full">
-        <div class="loader"></div>
+        <lottie-player
+          src="/loading.json"
+          background="transparent"
+          speed="1"
+          style="width: 300px; height: 300px"
+          loop
+          autoplay
+        ></lottie-player>
+
         <p class="mt-4 text-center" v-if="message">
           {{ message }}
         </p>
@@ -47,21 +55,22 @@ const state = reactive({ count: 0 });
 
 <style scoped>
 .content-loading {
+  position: fixed;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   min-width: 32px;
   min-height: 32px;
-  z-index: 1;
+  z-index: 5;
 }
 .loader {
-  border: 4px solid var(--color-ns-cyan);
+  border: 4px solid var(--c-primary);
   border-radius: 50%;
-  border-top: 4px solid var(--color-ns-cyan);
+  border-top: 4px solid var(--c-secondary);
   width: 35px;
   height: 35px;
   -webkit-animation: spin 2s linear infinite; /* Safari */

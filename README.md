@@ -11,6 +11,6 @@ npm run dev
 ```
 
 ## Roadmap
-- Share configuration.
+- ✅  Share project configuration.
 - Allow changing npm version in plugins.
 - ✅ Add react plugins for OpenNative.

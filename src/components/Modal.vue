@@ -47,7 +47,7 @@ export default defineComponent({
     },
     maxHeight: {
       type: String,
-      default: "100%",
+      default: "auto",
     },
   },
   emits: ["close"],

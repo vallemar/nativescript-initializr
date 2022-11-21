@@ -390,3 +390,19 @@ input[type="text"]:focus {
   outline-width: 0;
   outline: none;
 }
+
+/* popper */
+.v-popper__popper.v-popper--theme-dropdown,
+.v-popper--theme-menu {
+  .v-popper__inner {
+    background: var(--color-ns-secondary) !important;
+    border-color:var(--color-ns-secondary) !important;
+  }
+
+  .v-popper__arrow-inner {
+    border-color: var(--color-ns-secondary) !important;
+  }
+  .v-popper__arrow-outer {
+    border-color:var(--color-ns-secondary) !important;
+  }
+}

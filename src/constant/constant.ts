@@ -52,3 +52,5 @@ export const PROJECT_DEFINITION: ProjectMetadata = {
   description: "Description",
   package: "com.nativescript.demo",
 };
+
+export const BASE_URL = import.meta.env.VITE_BASE_URL;
