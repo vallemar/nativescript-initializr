@@ -4,6 +4,8 @@ import { PluginShared, SharedProject } from "@/types/share.types";
 import { BASE_URL } from "@/constant/constant";
 import { pluginService } from "@/services/PluginService";
 
+const SHARE_PARAM = "share";
+
 export const shared = {
   exportShared(
     flavor: Flavor,
@@ -37,26 +39,29 @@ export const shared = {
     );
     return (
       BASE_URL +
-      "?" +
-      new URLSearchParams({
-        flavor: sharedData.flavor,
-        name: sharedData.name,
-        description: sharedData.description || "",
-        package: sharedData.package || "",
-        rnPlugins: activeRNPlugins.toString(),
-      }).toString() +
-      (plugins.length === 0
-        ? ""
-        : "&plugin=" +
-          sharedData.plugins
-            .map((plugin) =>
-              JSON.stringify({ package: plugin.package, type: plugin.type })
-            )
-            .join("&plugin="))
+      `?${SHARE_PARAM}=` +
+      btoa(
+        new URLSearchParams({
+          flavor: sharedData.flavor,
+          name: sharedData.name,
+          description: sharedData.description || "",
+          package: sharedData.package || "",
+          rnPlugins: activeRNPlugins.toString(),
+        }).toString() +
+          (plugins.length === 0
+            ? ""
+            : "&plugin=" +
+              sharedData.plugins
+                .map((plugin) =>
+                  JSON.stringify({ package: plugin.package, type: plugin.type })
+                )
+                .join("&plugin="))
+      )
     );
   },
   retrieveSharedProject(route: RouteLocationNormalizedLoaded): SharedProject {
-    const pluginsInURL = route.query["plugin"] as [];
+    const stringShare = shared.getStringShare(route)!;
+    const pluginsInURL = stringShare.getAll("plugin") as [];
     const plugins: PluginShared[] = [];
     if (pluginsInURL) {
       if (Array.isArray(pluginsInURL)) {
@@ -70,18 +75,27 @@ export const shared = {
     }
 
     return {
-      flavor: route.query["flavor"] as string,
-      name: route.query["name"] as string,
-      description: route.query["description"] as string | undefined,
-      package: route.query["package"] as string | undefined,
+      flavor: stringShare.get("flavor") as string,
+      name: stringShare.get("name") as string,
+      description: stringShare.get("description") as string | undefined,
+      package: stringShare.get("package") as string | undefined,
       plugins: plugins,
-      rnPlugins: (route.query["rnPlugins"] as any) == "true",
+      rnPlugins: (stringShare.get("rnPlugins") as any) == "true",
     };
   },
   isSharedProject(route: RouteLocationNormalizedLoaded): boolean {
-    return (
-      route.query["flavor"] !== undefined && route.query["name"] !== undefined
-    );
+    return !!shared.getStringShare(route);
+  },
+  getStringShare(route: RouteLocationNormalizedLoaded): URLSearchParams | null {
+    const shareDataBase64 = route.query[SHARE_PARAM] as string | undefined;
+    if (shareDataBase64) {
+      const shareData = atob(shareDataBase64) as string;
+      const urlParams = new URLSearchParams(shareData);
+      if (urlParams.get("flavor") !== null && urlParams.get("name") !== null) {
+        return urlParams;
+      }
+    }
+    return null;
   },
   resolvePlugins(
     route: RouteLocationNormalizedLoaded,

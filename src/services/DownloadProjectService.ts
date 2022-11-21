@@ -57,6 +57,7 @@ export class DownloadProjectService {
     }
     this.addWebpackFile(items, this.containOpenNativePlugin(plugins), flavor);
     const zip = this.buildZip(items, flavor, projectDefinition);
+    link.download = projectDefinition.name;
     this.downloadUser(link, zip);
   }
 
@@ -70,6 +71,7 @@ export class DownloadProjectService {
     projectDefinition: ProjectMetadata
   ): JSZip {
     const zip = new JSZip();
+
     const projectName = projectDefinition.name.trim().replace(" ", "-");
     zip.folder(projectName);
 
