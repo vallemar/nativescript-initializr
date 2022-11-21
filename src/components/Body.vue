@@ -213,7 +213,7 @@ pluginService.findAll().then((plugins) => {
         class="px-3 md:px-5 py-2 text-white bg font-bold mr-4 rounded-full"
         @click="sharedProject"
       >
-        Shared
+        Share
       </button>
       <button
         class="px-5 py-2 color-bg font-bold mr-4 md:mr-0 rounded-full"
