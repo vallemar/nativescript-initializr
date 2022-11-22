@@ -41,6 +41,10 @@ defineProps({
     type: String,
     default: "absolute",
   },
+  zIndex: {
+    type: Number,
+    default: 1
+  },
 });
 const state = reactive({ count: 0 });
 </script>
@@ -56,10 +60,10 @@ const state = reactive({ count: 0 });
   align-items: center;
   min-width: 32px;
   min-height: 32px;
-  z-index: 1;
+  z-index: v-bind(zIndex);
 }
 .loader {
-  border: 4px solid var(--color-ns-cyan);
+  border: 4px solid var(--color-ns-secondary) ;
   border-radius: 50%;
   border-top: 4px solid var(--color-ns-cyan);
   width: 35px;

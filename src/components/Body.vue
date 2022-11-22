@@ -2,6 +2,8 @@
 import { computed, reactive, ref, defineAsyncComponent } from "vue";
 import { Flavor, Plugin, ProjectMetadata } from "@/types/app.types";
 import RadioGroup from "@/components/RadioGroup.vue";
+import Modal from "@/components/Modal.vue";
+import SearchPlugins from "@/components/SearchPlugins.vue";
 import { FLAVORS, PROJECT_DEFINITION } from "@/constant/constant";
 import { pluginService } from "@/services/PluginService";
 import { useClipboard, useWindowSize } from "@vueuse/core";
@@ -14,14 +16,12 @@ import { eventAnalytics, EventsAnalytics } from "@/utils/Analytics";
 const ItemPlugin = defineAsyncComponent(
   () => import("@/components/ItemPlugin.vue")
 );
-const SearchPlugins = defineAsyncComponent(
-  () => import("@/components/SearchPlugins.vue")
-);
-const Modal = defineAsyncComponent(() => import("@/components/Modal.vue"));
+
 const LoadingDownload = defineAsyncComponent(
   () => import("@/components/LoadingDownload.vue")
 );
 const Loading = defineAsyncComponent(() => import("@/components/Loading.vue"));
+
 const downloadProjectService: DownloadProjectService =
   new DownloadProjectService();
 const { width } = useWindowSize();
@@ -172,8 +172,7 @@ pluginService.findAll().then((plugins) => {
           </div>
         </div>
         <div class="mt-2 added-plugin relative" style="min-height: 200px">
-          <Loading :show="loadingPlugins" position="absolute"></Loading>
-
+          <Loading :show="loadingPlugins" :zIndex="0" position="absolute"></Loading>
           <div
             v-for="(pluginAdded, i) in addPlugins"
             :key="i"

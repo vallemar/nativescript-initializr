@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, PropType, ref, watch, reactive } from "vue";
+import { PropType, ref, reactive } from "vue";
 import { Plugin } from "@/types/app.types";
 import ItemPlugin from "@/components/ItemPlugin.vue";
 import Switch from "@/components/Switch.vue";
